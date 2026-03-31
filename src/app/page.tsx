@@ -22,16 +22,11 @@ export default function Landing() {
         <h1 style={{ fontSize: 36, fontWeight: 700, color: '#fff', letterSpacing: '-1px', position: 'relative', marginBottom: 8 }}>
           Timecapsule
         </h1>
-        <p style={{ fontSize: 16, color: '#fff99', position: 'relative', maxWidth: 400, margin: '0 auto 28px', lineHeight: 1.5 }}>
+        <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.88)', position: 'relative', maxWidth: 400, margin: '0 auto 28px', lineHeight: 1.5 }}>
           Send messages to the future
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', position: 'relative' }}>
-          <Link href="/capsules" style={{
-            height: 48, borderRadius: 14, padding: '0 28px',
-            background: '#fff', color: '#333', fontSize: 16, fontWeight: 600,
-            display: 'inline-flex', alignItems: 'center', textDecoration: 'none',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
-          }}>
+          <Link href="/capsules" className="btn btn-white">
             Get Started
           </Link>
         </div>
@@ -41,11 +36,7 @@ export default function Landing() {
         <h2 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.4px', marginBottom: 20, color: 'var(--ios-label)' }}>Features</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {FEATURES.map(f => (
-            <Link key={f.href} href={f.href} style={{
-              padding: 20, borderRadius: 16, background: 'var(--ios-bg2)',
-              boxShadow: 'var(--ios-shadow)',
-              textDecoration: 'none', transition: 'transform 0.2s ease',
-            }}>
+            <Link key={f.href} href={f.href} className="card" style={{ padding: 20, display: 'block' }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>{f.icon}</div>
               <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--ios-label)', marginBottom: 4 }}>{f.label}</div>
               <div style={{ fontSize: 13, color: 'var(--ios-label3)', lineHeight: 1.4 }}>{f.desc}</div>
