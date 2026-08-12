@@ -2,10 +2,10 @@
 import Link from 'next/link';
 
 const FEATURES = [
-  { label: 'My Capsules', href: '/capsules', icon: '✨', desc: 'My Capsules feature coming soon' },
-  { label: 'Capsule Detail', href: '/capsules', icon: '✨', desc: 'Capsule Detail feature coming soon' },
-  { label: 'Create Capsule', href: '/capsules', icon: '✨', desc: 'Create Capsule feature coming soon' },
-  { label: 'Timeline', href: '/timeline', icon: '✨', desc: 'Timeline feature coming soon' }
+  { label: 'My Capsules', href: '/capsules', icon: '📬', desc: 'View and manage your time capsules' },
+  { label: 'Create Capsule', href: '/capsules', icon: '✏️', desc: 'Write a message to your future self' },
+  { label: 'Timeline', href: '/timeline', icon: '📅', desc: 'See when your capsules unlock' },
+  { label: 'Received', href: '/received', icon: '📨', desc: 'Capsules shared with you' }
 ];
 
 export default function Landing() {
