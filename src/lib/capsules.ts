@@ -30,3 +30,8 @@ export function saveCapsule(capsule: Capsule): void {
   const capsules = getCapsules();
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify([capsule, ...capsules]));
 }
+
+export function deleteCapsule(id: string): void {
+  const capsules = getCapsules().filter((c) => c.id !== id);
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(capsules));
+}

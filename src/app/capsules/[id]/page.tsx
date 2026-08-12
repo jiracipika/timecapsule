@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Capsule, getCapsules } from '@/lib/capsules';
+import { Capsule, getCapsules, deleteCapsule } from '@/lib/capsules';
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
@@ -11,6 +11,7 @@ function formatDate(value: string) {
 
 export default function CapsuleDetailPage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const [capsule, setCapsule] = useState<Capsule | null | undefined>(undefined);
 
   useEffect(() => {
@@ -39,6 +40,18 @@ export default function CapsuleDetailPage() {
           <p className="page-subtitle">{isUnlocked ? `Opened on ${formatDate(capsule.unlockDate)}` : `This capsule opens ${formatDate(capsule.unlockDate)}.`}</p>
           {isUnlocked ? <p className="capsule-message">{capsule.message}</p> : <div className="locked-message" aria-label="Message is locked until the selected date">🔒<span>Your message stays private until its opening day.</span></div>}
         </article>
+        <button
+          className="btn btn-secondary"
+          style={{ marginTop: 16, color: 'var(--ios-red, #FF3B30)' }}
+          onClick={() => {
+            if (confirm('Delete this capsule? This cannot be undone.')) {
+              deleteCapsule(capsule.id);
+              router.push('/capsules');
+            }
+          }}
+        >
+          Delete capsule
+        </button>
       </div>
     </main>
   );
