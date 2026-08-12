@@ -1,32 +1,59 @@
 'use client';
+
 import Link from 'next/link';
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { saveCapsule } from '@/lib/capsules';
+
+function tomorrowDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  return date.toISOString().slice(0, 10);
+}
 
 export default function CreateCapsulePage() {
-  return (
-    <div style={{ background: 'var(--ios-bg)', minHeight: '100vh' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '60px 16px 40px' }}>
-        <Link href="/" className="back-link">← Back</Link>
-        <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--ios-label)', marginBottom: 8 }}>Create Capsule</h1>
-        <p style={{ fontSize: 15, color: 'var(--ios-label3)', marginBottom: 24 }}>
-          Create Capsule for Timecapsule — coming soon with full functionality.
-        </p>
+  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [unlockDate, setUnlockDate] = useState(tomorrowDate);
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ height: 120, background: 'linear-gradient(135deg, hsl(' + (i * 51) + ', 40%, 85%) 0%, hsl(' + ((i * 51) + 30) + ', 45%, 80%) 100%)' }} />
-              <div style={{ padding: 14 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--ios-label)', marginBottom: 4 }}>
-                  Create Capsule Item {i}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--ios-label3)' }}>
-                  Added {i}d ago
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmedTitle = title.trim();
+    const trimmedMessage = message.trim();
+    if (!trimmedTitle || !trimmedMessage || !unlockDate) return;
+
+    saveCapsule({
+      id: crypto.randomUUID(),
+      title: trimmedTitle,
+      message: trimmedMessage,
+      unlockDate,
+      createdAt: new Date().toISOString(),
+    });
+    router.push('/capsules');
+  }
+
+  return (
+    <main className="page-shell">
+      <div className="page-content">
+        <Link href="/capsules" className="back-link">← My capsules</Link>
+        <h1 className="page-title">Create a capsule</h1>
+        <p className="page-subtitle">Write a message now and choose the day it can be opened.</p>
+
+        <form className="card capsule-form" onSubmit={handleSubmit}>
+          <label htmlFor="title">Title</label>
+          <input id="title" name="title" value={title} onChange={(event) => setTitle(event.target.value)} maxLength={80} required autoFocus />
+
+          <label htmlFor="message">Message</label>
+          <textarea id="message" name="message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={5000} required rows={8} />
+
+          <label htmlFor="unlockDate">Open on</label>
+          <input id="unlockDate" name="unlockDate" type="date" min={tomorrowDate()} value={unlockDate} onChange={(event) => setUnlockDate(event.target.value)} required />
+          <p className="field-hint">Your message is stored only in this browser. It will remain locked until this date.</p>
+
+          <button className="btn btn-primary" type="submit">Seal capsule</button>
+        </form>
       </div>
-    </div>
+    </main>
   );
 }

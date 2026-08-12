@@ -1,32 +1,55 @@
 'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Capsule, getCapsules } from '@/lib/capsules';
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
+}
 
 export default function MyCapsulesPage() {
-  return (
-    <div style={{ background: 'var(--ios-bg)', minHeight: '100vh' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '60px 16px 40px' }}>
-        <Link href="/" className="back-link">← Back</Link>
-        <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--ios-label)', marginBottom: 8 }}>My Capsules</h1>
-        <p style={{ fontSize: 15, color: 'var(--ios-label3)', marginBottom: 24 }}>
-          My Capsules for Timecapsule — coming soon with full functionality.
-        </p>
+  const [capsules, setCapsules] = useState<Capsule[]>([]);
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ height: 120, background: 'linear-gradient(135deg, hsl(' + (i * 51) + ', 40%, 85%) 0%, hsl(' + ((i * 51) + 30) + ', 45%, 80%) 100%)' }} />
-              <div style={{ padding: 14 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--ios-label)', marginBottom: 4 }}>
-                  My Capsules Item {i}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--ios-label3)' }}>
-                  Added {i}d ago
-                </div>
-              </div>
-            </div>
-          ))}
+  useEffect(() => setCapsules(getCapsules()), []);
+
+  return (
+    <main className="page-shell">
+      <div className="page-content">
+        <Link href="/" className="back-link">← Home</Link>
+        <div className="page-heading">
+          <div>
+            <h1 className="page-title">My capsules</h1>
+            <p className="page-subtitle">Messages you have sealed for the future.</p>
+          </div>
+          <Link href="/capsules/new" className="btn btn-primary">Create capsule</Link>
         </div>
+
+        {capsules.length === 0 ? (
+          <section className="card empty-state" aria-labelledby="empty-heading">
+            <span aria-hidden="true">📬</span>
+            <h2 id="empty-heading">No capsules yet</h2>
+            <p>Create a private note to open on a meaningful day.</p>
+            <Link href="/capsules/new" className="btn btn-primary">Create your first capsule</Link>
+          </section>
+        ) : (
+          <div className="capsule-list">
+            {capsules.map((capsule) => {
+              const isUnlocked = new Date(`${capsule.unlockDate}T00:00:00`) <= new Date();
+              return (
+                <Link key={capsule.id} href={`/capsules/${capsule.id}`} className="card capsule-summary">
+                  <div>
+                    <span className={`status ${isUnlocked ? 'status-open' : 'status-sealed'}`}>{isUnlocked ? 'Open now' : 'Sealed'}</span>
+                    <h2>{capsule.title}</h2>
+                    <p>{isUnlocked ? 'Your message is ready to read.' : `Opens ${formatDate(capsule.unlockDate)}.`}</p>
+                  </div>
+                  <span className="chevron" aria-hidden="true">›</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

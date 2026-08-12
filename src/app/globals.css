@@ -184,3 +184,70 @@ a {
   line-height: var(--leading-relaxed);
   margin-bottom: var(--space-lg);
 }
+
+/* ---------- Capsule workflow ---------- */
+.page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.capsule-form,
+.capsule-detail,
+.empty-state {
+  padding: var(--space-lg);
+}
+
+.capsule-form {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.capsule-form label {
+  color: var(--ios-label2);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: var(--space-sm);
+}
+
+.capsule-form input,
+.capsule-form textarea {
+  width: 100%;
+  border: 1px solid var(--ios-sep);
+  border-radius: var(--radius-sm);
+  background: var(--ios-bg);
+  color: var(--ios-label);
+  font: inherit;
+  padding: 12px;
+}
+
+.capsule-form textarea { resize: vertical; }
+.capsule-form .btn { justify-self: start; margin-top: var(--space-sm); }
+.field-hint { color: var(--ios-label3); font-size: 13px; line-height: var(--leading-normal); }
+
+.empty-state { text-align: center; display: grid; justify-items: center; gap: var(--space-md); }
+.empty-state > span { font-size: 40px; }
+.empty-state h2 { font-size: 20px; }
+.empty-state p { color: var(--ios-label3); }
+
+.capsule-list { display: grid; gap: 12px; }
+.capsule-summary { padding: var(--space-md); display: flex; justify-content: space-between; align-items: center; }
+.capsule-summary h2 { color: var(--ios-label); font-size: 17px; margin: 6px 0 2px; }
+.capsule-summary p { color: var(--ios-label3); font-size: 14px; }
+.chevron { color: var(--ios-label3); font-size: 28px; }
+.status { display: inline-block; border-radius: 999px; font-size: 12px; font-weight: 600; padding: 3px 8px; }
+.status-sealed { background: #fff0dc; color: #9a4a00; }
+.status-open { background: #e4f8eb; color: #16733b; }
+.capsule-detail .status { margin-bottom: var(--space-md); }
+.capsule-message { color: var(--ios-label2); line-height: var(--leading-relaxed); white-space: pre-wrap; }
+.locked-message { min-height: 160px; border-radius: var(--radius-md); background: var(--ios-fill2); color: var(--ios-label3); display: grid; place-content: center; gap: var(--space-sm); text-align: center; padding: var(--space-lg); }
+.locked-message:first-letter { font-size: 28px; }
+
+@media (max-width: 480px) {
+  .page-heading { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
