@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 const FEATURES = [
   { label: 'My Capsules', href: '/capsules', icon: '📬', desc: 'View and manage your time capsules' },
-  { label: 'Create Capsule', href: '/capsules', icon: '✏️', desc: 'Write a message to your future self' },
+  { label: 'Create Capsule', href: '/capsules/new', icon: '✏️', desc: 'Write a message to your future self' },
   { label: 'Timeline', href: '/timeline', icon: '📅', desc: 'See when your capsules unlock' },
-  { label: 'Received', href: '/received', icon: '📨', desc: 'Capsules shared with you' }
+  { label: 'Received', href: '/received', icon: '📨', desc: 'Import capsules shared with you' }
 ];
 
 export default function Landing() {
