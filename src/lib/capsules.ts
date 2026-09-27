@@ -35,3 +35,13 @@ export function deleteCapsule(id: string): void {
   const capsules = getCapsules().filter((c) => c.id !== id);
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(capsules));
 }
+
+/**
+ * The unlock contract: a capsule opens at LOCAL midnight of its unlockDate
+ * (the bare YYYY-MM-DD is parsed as local time by design — a capsule is
+ * "for" a calendar day, not an instant). Single source of truth; the page
+ * files used to duplicate this comparison inline.
+ */
+export function isUnlocked(capsule: Capsule, now: Date = new Date()): boolean {
+  return new Date(`${capsule.unlockDate}T00:00:00`) <= now;
+}

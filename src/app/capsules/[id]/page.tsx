@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Capsule, getCapsules, deleteCapsule } from '@/lib/capsules';
+import { Capsule, getCapsules, deleteCapsule, isUnlocked as isCapsuleUnlocked } from '@/lib/capsules';
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
@@ -29,7 +29,7 @@ export default function CapsuleDetailPage() {
     );
   }
 
-  const isUnlocked = new Date(`${capsule.unlockDate}T00:00:00`) <= new Date();
+  const isUnlocked = isCapsuleUnlocked(capsule);
   return (
     <main className="page-shell">
       <div className="page-content">

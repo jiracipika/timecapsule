@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Capsule, getCapsules } from '@/lib/capsules';
+import { Capsule, getCapsules, isUnlocked as isCapsuleUnlocked } from '@/lib/capsules';
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
@@ -35,7 +35,7 @@ export default function MyCapsulesPage() {
         ) : (
           <div className="capsule-list">
             {capsules.map((capsule) => {
-              const isUnlocked = new Date(`${capsule.unlockDate}T00:00:00`) <= new Date();
+              const isUnlocked = isCapsuleUnlocked(capsule);
               return (
                 <Link key={capsule.id} href={`/capsules/${capsule.id}`} className="card capsule-summary">
                   <div>

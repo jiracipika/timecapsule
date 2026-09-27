@@ -94,3 +94,40 @@ describe('capsules storage', () => {
     expect(stored[0].id).toBe('valid');
   });
 });
+
+// ---- unlock contract (extracted from page files) --------------------------
+
+import { isUnlocked } from './capsules';
+
+describe('isUnlocked', () => {
+  const base: Capsule = {
+    id: 'c1',
+    title: 'T',
+    message: 'M',
+    unlockDate: '2099-01-01',
+    createdAt: '2026-09-27T12:00:00.000Z',
+  };
+
+  it('far-future unlock date stays sealed', () => {
+    expect(isUnlocked(base, new Date('2026-09-27T12:00:00'))).toBe(false);
+  });
+
+  it('opens at LOCAL midnight of the unlock date (calendar-date semantics)', () => {
+    // Local midnight is parsed from the bare date string; the capsule is
+    // still sealed the evening before, and open any time that day after.
+    const sealed = isUnlocked(base, new Date('2098-12-31T23:59:59'));
+    const open = isUnlocked(base, new Date('2099-01-01T00:00:01'));
+    expect(sealed).toBe(false);
+    expect(open).toBe(true);
+  });
+
+  it('the morning of the unlock date counts as open (00:00 boundary)', () => {
+    // 2099-01-01T00:00:00 itself (exact boundary) is open.
+    expect(isUnlocked(base, new Date('2099-01-01T00:00:00'))).toBe(true);
+  });
+
+  it('defaults `now` to the real clock', () => {
+    expect(isUnlocked({ ...base, unlockDate: '2000-01-01' })).toBe(true);
+    expect(isUnlocked({ ...base, unlockDate: '2999-01-01' })).toBe(false);
+  });
+});
