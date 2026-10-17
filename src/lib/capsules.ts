@@ -16,6 +16,8 @@ function isCapsule(value: unknown): value is Capsule {
   );
 }
 
+export { isCapsule };
+
 export function getCapsules(): Capsule[] {
   if (typeof window === 'undefined') return [];
   try {
@@ -29,6 +31,11 @@ export function getCapsules(): Capsule[] {
 export function saveCapsule(capsule: Capsule): void {
   const capsules = getCapsules();
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify([capsule, ...capsules]));
+}
+
+/** Replace the whole stored list (used by backup import). */
+export function saveCapsules(capsules: Capsule[]): void {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(capsules));
 }
 
 export function deleteCapsule(id: string): void {
