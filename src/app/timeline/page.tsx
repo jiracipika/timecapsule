@@ -1,7 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { getCapsules, type Capsule } from '@/lib/capsules';
+import { springEntrance, staggerContainer, riseIn } from '@/components/motion-kit';
 
 interface Entry {
   id: string;
@@ -62,16 +64,28 @@ export default function TimelinePage() {
         </p>
 
         {entries.length === 0 && hydrated ? (
-          <section className="card empty-state" aria-labelledby="timeline-empty-heading">
+          <motion.section
+            className="card empty-state"
+            aria-labelledby="timeline-empty-heading"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={springEntrance}
+          >
             <span aria-hidden="true">📅</span>
             <h2 id="timeline-empty-heading">Nothing scheduled yet</h2>
             <p>Create a capsule and its opening day will appear here.</p>
             <Link href="/capsules/new" className="btn btn-primary">Create your first capsule</Link>
-          </section>
+          </motion.section>
         ) : (
-          <ol aria-label="Capsule timeline" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <motion.ol
+            aria-label="Capsule timeline"
+            variants={staggerContainer(0.05)}
+            initial="hidden"
+            animate="show"
+            style={{ listStyle: 'none', margin: 0, padding: 0 }}
+          >
             {entries.map((entry) => (
-              <li key={entry.id}>
+              <motion.li key={entry.id} variants={riseIn}>
                 <Link
                   href={`/capsules/${entry.id}`}
                   className="card"
@@ -104,9 +118,9 @@ export default function TimelinePage() {
                     {new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(`${entry.unlockDate}T00:00:00`))}
                   </span>
                 </Link>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         )}
       </div>
     </main>

@@ -1,7 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { getCapsules } from '@/lib/capsules';
+import { TactileButton, fadeRise, tactile } from '@/components/motion-kit';
 
 /**
  * Received — capsules shared with you.
@@ -52,7 +54,7 @@ export default function ReceivedPage() {
         <h1 className="page-title">Received</h1>
         <p className="page-subtitle">Capsules shared with you will land here.</p>
 
-        <section className="card empty-state" aria-labelledby="received-heading">
+        <motion.section className="card empty-state" aria-labelledby="received-heading" {...fadeRise}>
           <span aria-hidden="true">📨</span>
           <h2 id="received-heading">Sharing is coming soon</h2>
           <p>
@@ -60,9 +62,9 @@ export default function ReceivedPage() {
             export one as a link or file so someone else can receive it on its
             opening day.
           </p>
-        </section>
+        </motion.section>
 
-        <section className="card" style={{ padding: 20 }}>
+        <motion.section className="card" style={{ padding: 20 }} {...fadeRise}>
           <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>Have a capsule code?</h2>
           <p style={{ fontSize: 13, color: 'var(--ios-label3)', marginBottom: 12 }}>
             Paste the shared JSON below to import it into My capsules. It stays
@@ -83,16 +85,26 @@ export default function ReceivedPage() {
             }}
           />
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
-            <button className="btn btn-primary" type="button" onClick={handleImport} disabled={!importText.trim()}>
+            <TactileButton className="btn btn-primary" type="button" onClick={handleImport} disabled={!importText.trim()} {...tactile}>
               Import capsule
-            </button>
-            {status && (
-              <p role="status" style={{ fontSize: 13, color: status.ok ? 'var(--ios-green)' : 'var(--ios-red)', margin: 0 }}>
-                {status.text}
-              </p>
-            )}
+            </TactileButton>
+            <AnimatePresence>
+              {status && (
+                <motion.p
+                  key="status"
+                  role="status"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ fontSize: 13, color: status.ok ? 'var(--ios-green)' : 'var(--ios-red)', margin: 0 }}
+                >
+                  {status.text}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
-        </section>
+        </motion.section>
       </div>
     </main>
   );

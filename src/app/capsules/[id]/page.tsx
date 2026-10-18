@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { Capsule, getCapsules, deleteCapsule, isUnlocked as isCapsuleUnlocked } from '@/lib/capsules';
+import { TactileButton, springEntrance, tactile } from '@/components/motion-kit';
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
@@ -34,13 +36,38 @@ export default function CapsuleDetailPage() {
     <main className="page-shell">
       <div className="page-content">
         <Link href="/capsules" className="back-link">← My capsules</Link>
-        <article className="card capsule-detail">
-          <span className={`status ${isUnlocked ? 'status-open' : 'status-sealed'}`}>{isUnlocked ? 'Opened' : 'Sealed'}</span>
+        {/* The emotional peak: a capsule opening. The card springs in, and on
+            opening day the message itself rises gently to meet you. */}
+        <motion.article
+          className="card capsule-detail"
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={springEntrance}
+        >
+          <motion.span
+            className={`status ${isUnlocked ? 'status-open' : 'status-sealed'}`}
+            initial={isUnlocked ? { opacity: 0, scale: 0.6 } : false}
+            animate={isUnlocked ? { opacity: 1, scale: 1 } : undefined}
+            transition={{ type: 'spring', bounce: 0.5, duration: 0.5, delay: 0.12 }}
+          >
+            {isUnlocked ? 'Opened' : 'Sealed'}
+          </motion.span>
           <h1 className="page-title">{capsule.title}</h1>
           <p className="page-subtitle">{isUnlocked ? `Opened on ${formatDate(capsule.unlockDate)}` : `This capsule opens ${formatDate(capsule.unlockDate)}.`}</p>
-          {isUnlocked ? <p className="capsule-message">{capsule.message}</p> : <div className="locked-message" aria-label="Message is locked until the selected date">🔒<span>Your message stays private until its opening day.</span></div>}
-        </article>
-        <button
+          {isUnlocked ? (
+            <motion.p
+              className="capsule-message"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...springEntrance, delay: 0.18 }}
+            >
+              {capsule.message}
+            </motion.p>
+          ) : (
+            <div className="locked-message" aria-label="Message is locked until the selected date">🔒<span>Your message stays private until its opening day.</span></div>
+          )}
+        </motion.article>
+        <TactileButton
           className="btn btn-secondary"
           style={{ marginTop: 16, color: 'var(--ios-red, #FF3B30)' }}
           onClick={() => {
@@ -49,9 +76,10 @@ export default function CapsuleDetailPage() {
               router.push('/capsules');
             }
           }}
+          {...tactile}
         >
           Delete capsule
-        </button>
+        </TactileButton>
       </div>
     </main>
   );
