@@ -5,10 +5,23 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Capsule, getCapsules, deleteCapsule, isUnlocked as isCapsuleUnlocked } from '@/lib/capsules';
+import { buildUnlockEvent } from '@/lib/calendar';
 import { TactileButton, springEntrance, tactile } from '@/components/motion-kit';
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(`${value}T00:00:00`));
+}
+
+function downloadUnlockEvent(capsule: Capsule) {
+  const ics = buildUnlockEvent(capsule);
+  if (!ics) return;
+  const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+  const link = document.createElement('a');
+  link.href = url;
+  const safeName = capsule.title.replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '') || 'time-capsule';
+  link.download = `${safeName}.ics`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export default function CapsuleDetailPage() {
@@ -67,19 +80,30 @@ export default function CapsuleDetailPage() {
             <div className="locked-message" aria-label="Message is locked until the selected date">🔒<span>Your message stays private until its opening day.</span></div>
           )}
         </motion.article>
-        <TactileButton
-          className="btn btn-secondary"
-          style={{ marginTop: 16, color: 'var(--ios-red, #FF3B30)' }}
-          onClick={() => {
-            if (confirm('Delete this capsule? This cannot be undone.')) {
-              deleteCapsule(capsule.id);
-              router.push('/capsules');
-            }
-          }}
-          {...tactile}
-        >
-          Delete capsule
-        </TactileButton>
+        <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+          {!isUnlocked && (
+            <TactileButton
+              className="btn btn-secondary"
+              onClick={() => downloadUnlockEvent(capsule)}
+              {...tactile}
+            >
+              Add to calendar
+            </TactileButton>
+          )}
+          <TactileButton
+            className="btn btn-secondary"
+            style={{ color: 'var(--ios-red, #FF3B30)' }}
+            onClick={() => {
+              if (confirm('Delete this capsule? This cannot be undone.')) {
+                deleteCapsule(capsule.id);
+                router.push('/capsules');
+              }
+            }}
+            {...tactile}
+          >
+            Delete capsule
+          </TactileButton>
+        </div>
       </div>
     </main>
   );
